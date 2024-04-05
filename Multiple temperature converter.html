@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<!--Multiple Temperature converter
+    Version 1.0
+    Created by : Ivander Andreas Wijaya-->
+
+<head>
+    <title>Temperature Converter</title>
+</head>
+
+<body id="body">
+    <h1>Temperature Converter</h1>
+    <h2>&#x1f321;&#xfe0f Celcius - Farenheit - Rankine - Réaumur - Kelvin</h2>
+    <p>Input the temperature</p>
+    <p>Celcius : <input type="number" value="0" id="celcius" onkeyup="doCalculation(1)"></p>
+    <p>Farenheit : <input type="number" value="0" id="farenheit" onkeyup="doCalculation(2)"></p>
+    <p>Rankine : <input type="number" value="0" id="rankine" onkeyup="doCalculation(3)"></p>
+    <p>Réaumur : <input type="number" value="0" id="reaumur" onkeyup="doCalculation(4)"></p>
+    <p>Kelvin : <input type="number" value="0" id="kelvin" onkeyup="doCalculation(5)"></p>
+    <input type="button" value="Reset" onclick="doReset()">
+    <input type="button" value="Day/Night&#127767;" onclick="changeTheme()" id="themeButton">
+    <script>
+        var theme = 0; //Variable to track day / night theme state
+
+        //Function to change the page theme
+        function changeTheme() {
+            var body = document.getElementById("body");
+            var button = document.getElementById("themeButton");
+
+            if (theme == 0) { //If the page currently at day
+                body.style.color = "white";
+                body.style.backgroundColor = "black";
+                theme = 1;
+                button.value = "Night🌓";
+            }
+            else if (theme == 1) { //If the page currently at night
+                body.style.color = "black";
+                body.style.backgroundColor = "white";
+                theme = 0;
+                button.value = "Day🌗";
+            }
+
+        }
+
+        function doCalculation(keys) {
+            //Link input from HTML to JS
+            var celciusIn = document.getElementById("celcius");
+            var farenheitIn = document.getElementById("farenheit");
+            var rankineIn = document.getElementById("rankine");
+            var reaumurIn = document.getElementById("reaumur");
+            var kelvinIn = document.getElementById("kelvin");
+
+            //Get input from user
+            var celcius = celciusIn.value;
+            var farenheit = farenheitIn.value;
+            var rankine = rankineIn.value;
+            var reaumur = reaumurIn.value;
+            var kelvin = kelvinIn.value;
+
+            //Convert input from text to number
+            var celciusDeg = Number(celcius);
+            var farenheitDeg = Number(farenheit);
+            var rankineDeg = Number(rankine);
+            var reaumurDeg = Number(reaumur);
+            var kelvinDeg = Number(kelvin);
+
+            //If the user input in Celcius value
+            if (keys == 1) {
+                var celciusTofarenheit = celciusDeg * 1.8 + 32;
+                var celciusTorankine = celciusDeg * 1.8 + 491.67;
+                var celciusToreaumur = celciusDeg * 0.8;
+                var celciusTokelvin = celciusDeg + 273.15;
+
+                farenheitIn.value = celciusTofarenheit.toFixed(1);
+                rankineIn.value = celciusTorankine.toFixed(1);
+                reaumurIn.value = celciusToreaumur.toFixed(1);
+                kelvinIn.value = celciusTokelvin.toFixed(1);
+            }
+
+            //If the user input in Farenheit value
+            if (keys == 2) {
+                var farenheitTocelcius = farenheitDeg * 0.5555560000 - 17.777778;
+                var farenheitTorankine = farenheitDeg + 459.67;
+                var farenheitToreaumur = farenheitDeg * 0.4444440000 - 14.22222222;
+                var farenheitTokelvin = farenheitDeg * 0.5555557778 + 255.3722222;
+
+                celciusIn.value = farenheitTocelcius.toFixed(1);
+                rankineIn.value = farenheitTorankine.toFixed(1);
+                reaumurIn.value = farenheitToreaumur.toFixed(1);
+                kelvinIn.value = farenheitTokelvin.toFixed(1);
+            }
+
+            //If the user input in Rankine value
+            if (keys == 3) {
+                var rankineTocelcius = rankineDeg * 0.5555560000 - 273.15;
+                var rankineTofarenheit = rankineDeg - 459.67;
+                var rankineToreaumur = rankineDeg * 0.4444440000 - 218.52;
+                var rankineTokelvin = rankineDeg * 0.5555555556;
+
+                celciusIn.value = rankineTocelcius.toFixed(1);
+                farenheitIn.value = rankineTofarenheit.toFixed(1);
+                reaumurIn.value = rankineToreaumur.toFixed(1);
+                kelvinIn.value = rankineTokelvin.toFixed(1);
+            }
+
+            //If the user input in Reaumur value
+            if (keys == 4) {
+                var reaumurTocelcius = reaumurDeg * 1.25;
+                var reaumurTofarenheit = reaumurDeg * 2.25 + 32;
+                var reaumurTorankine = reaumurDeg * 2.25 + 491.67;
+                var reaumurTokelvin = reaumurDeg * 1.25 + 273.15;
+
+                celciusIn.value = reaumurTocelcius.toFixed(1);
+                farenheitIn.value = reaumurTofarenheit.toFixed(1);
+                rankineIn.value = reaumurTorankine.toFixed(1);
+                kelvinIn.value = reaumurTokelvin.toFixed(1);
+            }
+
+            //If the user input in Kelvin value
+            if (keys == 5) {
+                var kelvinTocelcius = kelvinDeg - 273.15;
+                var kelvinTofarenheit = kelvinDeg * 1.8 - 459.67;
+                var kelvinTorankine = kelvinDeg * 1.8;
+                var kelvinToreaumur = kelvinDeg * 0.8 - 218.52;
+
+                celciusIn.value = kelvinTocelcius.toFixed(1);
+                farenheitIn.value = kelvinTofarenheit.toFixed(1);
+                rankineIn.value = kelvinTorankine.toFixed(1);
+                reaumurIn.value = kelvinToreaumur.toFixed(1);
+            }
+
+        }
+
+        //Reset converter after use
+        function doReset() {
+            var celcius = document.getElementById("celcius");
+            var farenheit = document.getElementById("farenheit");
+            var rankine = document.getElementById("rankine");
+            var reaumur = document.getElementById("reaumur");
+            var kelvin = document.getElementById("kelvin");
+
+            celcius.value = 0;
+            farenheit.value = 0;
+            rankine.value = 0;
+            reaumur.value = 0;
+            kelvin.value = 0;
+        }
+    </script>
+</body>
+
+</html>
