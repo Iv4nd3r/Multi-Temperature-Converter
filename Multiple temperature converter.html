@@ -1,222 +1,36 @@
 <!DOCTYPE html>
 <html>
 <!--Multiple Temperature converter
-    Version 1.0.1
+    Version 1.1.0
     Created by : Ivander Andreas Wijaya
     What's new : 
-    1.0.1 - using boolean state for keeping darktheme state,using identity to compare, changing var to let, adding custom font color, simplify the calculation function-->
+    1.0.1 - using boolean state for keeping darktheme state,using identity to compare, changing var to let, adding custom font color, simplify the calculation function
+    1.1.0 - separating stylesheet, script, and markup, implementing DOM, simplify the day/night theme, adding layout and using label-->
 
 <head>
     <title>Temperature Converter</title>
+    <link rel="stylesheet" href="Multiple temperature converter.css">
+    <script src="Multiple temperature converter.js"></script>
 </head>
 
-<body id="body">
+<body id="body" onload="startApp()">
     <h1>Temperature Converter</h1>
     <h2>&#x1f321;&#xfe0f Celcius - Farenheit - Rankine - Réaumur - Kelvin</h2>
     <p>Input the temperature</p>
-    <p>Celcius : <input type="number" value="0" id="celcius" onkeyup="doCalculation(1)"></p>
-    <p>Farenheit : <input type="number" value="0" id="farenheit" onkeyup="doCalculation(2)"></p>
-    <p>Rankine : <input type="number" value="0" id="rankine" onkeyup="doCalculation(3)"></p>
-    <p>Réaumur : <input type="number" value="0" id="reaumur" onkeyup="doCalculation(4)"></p>
-    <p>Kelvin : <input type="number" value="0" id="kelvin" onkeyup="doCalculation(5)"></p>
-    <input type="button" value="Reset" onclick="doReset(), changeTheme(3)">
+
+    <ul id="converterItems">
+    </ul>
+    <input type="button" value="Reset" onclick="doReset(1)">
     <input type="button" value="Day/Night&#127767;" onclick="changeTheme(1)" id="themeButton">
     <input type="color" value="#000000" id="colorPicker" onchange="changeTheme(2)">
     <script>
-        let darkTheme = false; //let variable to track day / night darkTheme state
-
-        //Function to get a number from the input element
-        function getNumberFromElement(id) {
-            //Link input from HTML to JS
-            let elementIn = document.getElementById(id);
-
-            //Get input from user
-            let element = elementIn.value;
-
-            //Convert input from text to number
-            let value = Number(element);
-            return value;
-        }
-
-        //Function to set the value to HTML element
-        function setValueToElement(value, id) {
-            let elementIn = document.getElementById(id);
-            elementIn.value = value;
-        }
-
-        //Function to change the page darkTheme
-        function changeTheme(keys) {
-
-            let body = document.getElementById("body");
-            let button = document.getElementById("themeButton");
-            let fontColor = document.getElementById("colorPicker");
-            let celciusIn = document.getElementById("celcius");
-            let farenheitIn = document.getElementById("farenheit");
-            let rankineIn = document.getElementById("rankine");
-            let reaumurIn = document.getElementById("reaumur");
-            let kelvinIn = document.getElementById("kelvin");
-
-            if (keys === 1) {
-                if (darkTheme === false) { //If the page currently at day
-                    body.style.backgroundColor = "#000000";
-                    celcius.style.backgroundColor = "#000000";
-                    farenheit.style.backgroundColor = "#000000";
-                    rankine.style.backgroundColor = "#000000";
-                    reaumur.style.backgroundColor = "#000000";
-                    kelvin.style.backgroundColor = "#000000";
-                    if (fontColor.value != "#000000") {
-                        body.style.color = fontColor.value;
-                        celcius.style.color = fontColor.value;
-                        farenheit.style.color = fontColor.value;
-                        rankine.style.color = fontColor.value;
-                        reaumur.style.color = fontColor.value;
-                        kelvin.style.color = fontColor.value;
-                    } else {
-                        body.style.color = "#FFFFFF";
-                        celcius.style.color = "#FFFFFF";
-                        farenheit.style.color = "#FFFFFF";
-                        rankine.style.color = "#FFFFFF";
-                        reaumur.style.color = "#FFFFFF";
-                        kelvin.style.color = "#FFFFFF";
-                    }
-                    darkTheme = true;
-                    button.value = "Night🌓";
-                }
-                else if (darkTheme === true) { //If the page currently at night
-                    body.style.backgroundColor = "#FFFFFF";
-                    celcius.style.backgroundColor = "#FFFFFF";
-                    farenheit.style.backgroundColor = "#FFFFFF";
-                    rankine.style.backgroundColor = "#FFFFFF";
-                    reaumur.style.backgroundColor = "#FFFFFF";
-                    kelvin.style.backgroundColor = "#FFFFFF";
-                    if (fontColor.value != "#FFFFFF") {
-                        body.style.color = fontColor.value;
-                        celcius.style.color = fontColor.value;
-                        farenheit.style.color = fontColor.value;
-                        rankine.style.color = fontColor.value;
-                        reaumur.style.color = fontColor.value;
-                        kelvin.style.color = fontColor.value;
-                    } else {
-                        body.style.color = "#000000";
-                        celcius.style.color = "#000000";
-                        farenheit.style.color = "#000000";
-                        rankine.style.color = "#000000";
-                        reaumur.style.color = "#000000";
-                        kelvin.style.color = "#000000";
-                    }
-                    darkTheme = false;
-                    button.value = "Day🌗";
-                }
-            } else if (keys === 2) {
-                body.style.color = fontColor.value;
-                celcius.style.color = fontColor.value;
-                farenheit.style.color = fontColor.value;
-                rankine.style.color = fontColor.value;
-                reaumur.style.color = fontColor.value;
-                kelvin.style.color = fontColor.value;
-            } else if (keys === 3) {
-                if (darkTheme === false) {
-                    body.style.color = "#000000";
-                    celcius.style.color = "#000000";
-                    farenheit.style.color = "#000000";
-                    rankine.style.color = "#000000";
-                    reaumur.style.color = "#000000";
-                    kelvin.style.color = "#000000";
-                    fontColor.value = "#FFFFFF";
-                } else if (darkTheme === true) {
-                    body.style.color = "#FFFFFF";
-                    celcius.style.color = "#FFFFFF";
-                    farenheit.style.color = "#FFFFFF";
-                    rankine.style.color = "#FFFFFF";
-                    reaumur.style.color = "#FFFFFF";
-                    kelvin.style.color = "#FFFFFF";
-                    fontColor.value = "#000000";
-                }
-            }
-        }
-
-        function doCalculation(keys) {
-            //Calling getNumberFromElement function to get the value from HTML element
-            celciusDeg = getNumberFromElement("celcius");
-            farenheitDeg = getNumberFromElement("farenheit");
-            rankineDeg = getNumberFromElement("rankine");
-            reaumurDeg = getNumberFromElement("reaumur");
-            kelvinDeg = getNumberFromElement("kelvin");
-
-            //If the user input in Celcius value
-            if (keys === 1) {
-                let celciusTofarenheit = celciusDeg * 1.8 + 32;
-                let celciusTorankine = celciusDeg * 1.8 + 491.67;
-                let celciusToreaumur = celciusDeg * 0.8;
-                let celciusTokelvin = celciusDeg + 273.15;
-
-                setValueToElement(celciusTofarenheit.toFixed(2), "farenheit");
-                setValueToElement(celciusTorankine.toFixed(2), "rankine");
-                setValueToElement(celciusToreaumur.toFixed(2), "reaumur");
-                setValueToElement(celciusTokelvin.toFixed(2), "kelvin");
-            }
-
-            //If the user input in Farenheit value
-            if (keys === 2) {
-                let farenheitTocelcius = farenheitDeg * 0.5555560000 - 17.777778;
-                let farenheitTorankine = farenheitDeg + 459.67;
-                let farenheitToreaumur = farenheitDeg * 0.4444440000 - 14.22222222;
-                let farenheitTokelvin = farenheitDeg * 0.5555557778 + 255.3722222;
-
-                setValueToElement(farenheitTocelcius.toFixed(2), "celcius");
-                setValueToElement(farenheitTorankine.toFixed(2), "rankine");
-                setValueToElement(farenheitToreaumur.toFixed(2), "reaumur");
-                setValueToElement(farenheitTokelvin.toFixed(2), "kelvin");
-            }
-
-            //If the user input in Rankine value
-            if (keys === 3) {
-                let rankineTocelcius = rankineDeg * 0.5555560000 - 273.15;
-                let rankineTofarenheit = rankineDeg - 459.67;
-                let rankineToreaumur = rankineDeg * 0.4444440000 - 218.52;
-                let rankineTokelvin = rankineDeg * 0.5555555556;
-
-                setValueToElement(rankineTocelcius.toFixed(2), "celcius");
-                setValueToElement(rankineTofarenheit.toFixed(2), "farenheit");
-                setValueToElement(rankineToreaumur.toFixed(2), "reaumur");
-                setValueToElement(rankineTokelvin.toFixed(2), "kelvin");
-            }
-
-            //If the user input in Reaumur value
-            if (keys === 4) {
-                let reaumurTocelcius = reaumurDeg * 1.25;
-                let reaumurTofarenheit = reaumurDeg * 2.25 + 32;
-                let reaumurTorankine = reaumurDeg * 2.25 + 491.67;
-                let reaumurTokelvin = reaumurDeg * 1.25 + 273.15;
-
-                setValueToElement(reaumurTocelcius.toFixed(2), "celcius");
-                setValueToElement(reaumurTofarenheit.toFixed(2), "farenheit");
-                setValueToElement(reaumurTorankine.toFixed(2), "rankine");
-                setValueToElement(reaumurTokelvin.toFixed(2), "kelvin");
-            }
-
-            //If the user input in Kelvin value
-            if (keys === 5) {
-                let kelvinTocelcius = kelvinDeg - 273.15;
-                let kelvinTofarenheit = kelvinDeg * 1.8 - 459.67;
-                let kelvinTorankine = kelvinDeg * 1.8;
-                let kelvinToreaumur = kelvinDeg * 0.8 - 218.52;
-
-                setValueToElement(kelvinTocelcius.toFixed(2), "celcius");
-                setValueToElement(kelvinTofarenheit.toFixed(2), "farenheit");
-                setValueToElement(kelvinTorankine.toFixed(2), "rankine");
-                setValueToElement(kelvinToreaumur.toFixed(2), "reaumur");
-            }
-
-        }
-
-        //Reset converter after use
-        function doReset() {
-            setValueToElement(0, "celcius");
-            setValueToElement(0, "farenheit");
-            setValueToElement(0, "rankine");
-            setValueToElement(0, "reaumur");
-            setValueToElement(0, "kelvin");
+        function startApp() {
+            buildPage("converterItems",
+                [{ id: "celcius", prompt: "Celcius", type: "input", keys: "1" },
+                { id: "farenheit", prompt: "Farenheit", type: "input", keys: "2" },
+                { id: "rankine", prompt: "Rankine", type: "input", keys: "3" },
+                { id: "reaumur", prompt: "Reaumur", type: "input", keys: "4" },
+                { id: "kelvin", prompt: "Kelvin", type: "input", keys: "5" }])
         }
     </script>
 </body>

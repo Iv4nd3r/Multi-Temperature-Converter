@@ -1,0 +1,15 @@
+.day {
+    display: inline-block;
+    width: fit-content;
+    margin: auto;
+    color: black;
+    background-color: white;
+}
+
+.night {
+    display: inline-block;
+    width: fit-content;
+    margin: auto;
+    color: white;
+    background-color: black;
+}
