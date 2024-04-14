@@ -1,5 +1,6 @@
 let darkTheme = false; //let variable to track day / night darkTheme state
 let customColor = false; //let variable to track custom font color usage
+let component = ["body", "themeButton", "resetButton", "colorPicker"]; //List of component that used inside the body
 
 //Function to create the page
 function buildPage(containerID, schema) {
@@ -18,11 +19,12 @@ function createElement(item) {
     let inputPar = document.createElement("p"); //Create a paragraph
 
     let labelElement = document.createElement("label"); //Create a label
-    let labelID = item.id + "lbl"; //Creating tect for labelID
-    labelElement.innerText = item.prompt + ":"; //Set the text to show on the label
+    let labelID = item.id + "lbl"; //Creating text for labelID
+    labelElement.innerText = item.prompt + " : "; //Set the text to show on the label
     labelElement.className = "day"; //Setting the same element ID for the label and the input
     labelElement.id = labelID; //Set the labelID
     labelElement.setAttribute("for", item.id); //Set the attribute for linking the label with the input
+    component[component.length] = labelID; //Add the id to the component list
     inputPar.appendChild(labelElement); //Adding the element to the paragraph
 
     switch (item.type) {
@@ -36,54 +38,49 @@ function createElement(item) {
     inputElement.setAttribute("id", item.id); //Set the id for the element
     inputElement.setAttribute("value", "0"); //Set a initial value for the element
     inputElement.setAttribute("onkeyup", key); //Set the action to do when the input was finished
+    component[component.length] = item.id;
     inputPar.appendChild(inputElement); //Add the element to the paragraph
+
+    let symElement = document.createElement("label"); //Create another label to add the symbol of the scales
+    let symID = item.id + "sym"; //Create symbol to add at the end of the input box
+    let sym = item.prompt; //Add the scale name
+    symElement.className = "day";
+    symElement.id = symID;
+    symElement.setAttribute("for", item.id);
+    switch (sym) {
+        case "Reaumur": //Case the scale was Reaumur which uses Re as the scale symbols
+            sym = " °Re"
+            symElement.innerText = sym;
+            break;
+
+        default:
+            symElement.innerText = " °" + sym[0];
+            break;
+    }
+    component[component.length] = symID;
+    inputPar.appendChild(symElement);
     return inputPar; //Return the whole paragraph
 }
 
 //Function to get a number from the input element
 function getNumberFromElement(id) {
-    let elementIn = document.getElementById(id); //Link input from HTML to JS
+    let elementIn = getElement(id) //Link input from HTML to JS
     let element = elementIn.value; //Get input from user
     let value = Number(element); //Convert input from text to number
     return value;
 }
 
-//Function to set the value to HTML element
-function setValueToElement(value, id) {
-    let elementIn = document.getElementById(id);
-    elementIn.value = value;
-}
-
 //Function to change the page darkTheme
 function changeTheme(keys) {
-
-    let body = document.getElementById("body");
-    let button = document.getElementById("themeButton");
-    let fontColor = document.getElementById("colorPicker");
-    let celciuslbl = document.getElementById("celciuslbl");
-    let farenheitlbl = document.getElementById("farenheitlbl");
-    let rankinelbl = document.getElementById("rankinelbl");
-    let reaumurlbl = document.getElementById("reaumurlbl");
-    let kelvinlbl = document.getElementById("kelvinlbl");
-    let celciusIn = document.getElementById("celcius");
-    let farenheitIn = document.getElementById("farenheit");
-    let rankineIn = document.getElementById("rankine");
-    let reaumurIn = document.getElementById("reaumur");
-    let kelvinIn = document.getElementById("kelvin");
+    let body = getElement(0);
+    let button = getElement(1);
+    let fontColor = getElement(3);
 
     if (keys === 1) { //Case the change theme button was pressed
         if (darkTheme === false) { //If the page currently at day
-            body.className = "night";
-            celciusIn.className = "night";
-            farenheitIn.className = "night";
-            rankineIn.className = "night";
-            reaumurIn.className = "night";
-            kelvinIn.className = "night";
-            celciuslbl.className = "night";
-            farenheitlbl.className = "night";
-            rankinelbl.className = "night";
-            reaumurlbl.className = "night";
-            kelvinlbl.className = "night";
+            for (item of component) {
+                setElement(item, "night", 1);
+            }
             if (fontColor.value === "#000000" && customColor === true) { //Reset the font color if the font color makes the text unreadable (invicible)
                 doReset(2);
             }
@@ -91,17 +88,9 @@ function changeTheme(keys) {
             button.value = "Night🌓";
         }
         else if (darkTheme === true) { //If the page currently at night
-            body.className = "day";
-            celciusIn.className = "day";
-            farenheitIn.className = "day";
-            rankineIn.className = "day";
-            reaumurIn.className = "day";
-            kelvinIn.className = "day";
-            celciuslbl.className = "day";
-            farenheitlbl.className = "day";
-            rankinelbl.className = "day";
-            reaumurlbl.className = "day";
-            kelvinlbl.className = "day";
+            for (item of component) {
+                setElement(item, "day", 1);
+            }
             if (fontColor.value === "#FFFFFF" && customColor === true) {
                 doReset(2);
             }
@@ -111,13 +100,9 @@ function changeTheme(keys) {
     } else if (keys === 2) { //Case the custom color was selected by user trough color picker
         body.style.color = fontColor.value;
         let dayElement = document.querySelectorAll(".day");
-        dayElement.forEach(function (element) {
-            element.style.color = fontColor.value;
-        })
+        dayElement.forEach((element) => element.style.color = fontColor.value);
         let nightElement = document.querySelectorAll(".night");
-        nightElement.forEach(function (element) {
-            element.style.color = fontColor.value
-        })
+        nightElement.forEach((element) => element.style.color = fontColor.value);
         customColor = true;
     }
 }
@@ -125,11 +110,11 @@ function changeTheme(keys) {
 //Function to convert betwween scales
 function doCalculation(keys) {
     //Calling getNumberFromElement function to get the value from HTML element
-    celciusDeg = getNumberFromElement("celcius");
-    farenheitDeg = getNumberFromElement("farenheit");
-    rankineDeg = getNumberFromElement("rankine");
-    reaumurDeg = getNumberFromElement("reaumur");
-    kelvinDeg = getNumberFromElement("kelvin");
+    celciusDeg = getNumberFromElement(5);
+    farenheitDeg = getNumberFromElement(8);
+    rankineDeg = getNumberFromElement(11);
+    reaumurDeg = getNumberFromElement(14);
+    kelvinDeg = getNumberFromElement(17);
 
     //If the user input in Celcius value
     if (keys === 1) {
@@ -138,10 +123,10 @@ function doCalculation(keys) {
         let celciusToreaumur = celciusDeg * 0.8;
         let celciusTokelvin = celciusDeg + 273.15;
 
-        setValueToElement(celciusTofarenheit.toFixed(2), "farenheit");
-        setValueToElement(celciusTorankine.toFixed(2), "rankine");
-        setValueToElement(celciusToreaumur.toFixed(2), "reaumur");
-        setValueToElement(celciusTokelvin.toFixed(2), "kelvin");
+        setElement(8, celciusTofarenheit.toFixed(2), 2);
+        setElement(11, celciusTorankine.toFixed(2), 2);
+        setElement(14, celciusToreaumur.toFixed(2), 2);
+        setElement(17, celciusTokelvin.toFixed(2), 2);
     }
 
     //If the user input in Farenheit value
@@ -151,10 +136,10 @@ function doCalculation(keys) {
         let farenheitToreaumur = farenheitDeg * 0.4444440000 - 14.22222222;
         let farenheitTokelvin = farenheitDeg * 0.5555557778 + 255.3722222;
 
-        setValueToElement(farenheitTocelcius.toFixed(2), "celcius");
-        setValueToElement(farenheitTorankine.toFixed(2), "rankine");
-        setValueToElement(farenheitToreaumur.toFixed(2), "reaumur");
-        setValueToElement(farenheitTokelvin.toFixed(2), "kelvin");
+        setElement(5, farenheitTocelcius.toFixed(2), 2);
+        setElement(11, farenheitTorankine.toFixed(2), 2);
+        setElement(14, farenheitToreaumur.toFixed(2), 2);
+        setElement(17, farenheitTokelvin.toFixed(2), 2);
     }
 
     //If the user input in Rankine value
@@ -164,10 +149,10 @@ function doCalculation(keys) {
         let rankineToreaumur = rankineDeg * 0.4444440000 - 218.52;
         let rankineTokelvin = rankineDeg * 0.5555555556;
 
-        setValueToElement(rankineTocelcius.toFixed(2), "celcius");
-        setValueToElement(rankineTofarenheit.toFixed(2), "farenheit");
-        setValueToElement(rankineToreaumur.toFixed(2), "reaumur");
-        setValueToElement(rankineTokelvin.toFixed(2), "kelvin");
+        setElement(5, rankineTocelcius.toFixed(2), 2);
+        setElement(8, rankineTofarenheit.toFixed(2), 2);
+        setElement(14, rankineToreaumur.toFixed(2), 2);
+        setElement(17, rankineTokelvin.toFixed(2), 2);
     }
 
     //If the user input in Reaumur value
@@ -177,10 +162,10 @@ function doCalculation(keys) {
         let reaumurTorankine = reaumurDeg * 2.25 + 491.67;
         let reaumurTokelvin = reaumurDeg * 1.25 + 273.15;
 
-        setValueToElement(reaumurTocelcius.toFixed(2), "celcius");
-        setValueToElement(reaumurTofarenheit.toFixed(2), "farenheit");
-        setValueToElement(reaumurTorankine.toFixed(2), "rankine");
-        setValueToElement(reaumurTokelvin.toFixed(2), "kelvin");
+        setElement(5, reaumurTocelcius.toFixed(2), 2);
+        setElement(8, reaumurTofarenheit.toFixed(2), 2);
+        setElement(11, reaumurTorankine.toFixed(2), 2);
+        setElement(17, reaumurTokelvin.toFixed(2), 2);
     }
 
     //If the user input in Kelvin value
@@ -190,10 +175,10 @@ function doCalculation(keys) {
         let kelvinTorankine = kelvinDeg * 1.8;
         let kelvinToreaumur = kelvinDeg * 0.8 - 218.52;
 
-        setValueToElement(kelvinTocelcius.toFixed(2), "celcius");
-        setValueToElement(kelvinTofarenheit.toFixed(2), "farenheit");
-        setValueToElement(kelvinTorankine.toFixed(2), "rankine");
-        setValueToElement(kelvinToreaumur.toFixed(2), "reaumur");
+        setElement(5, kelvinTocelcius.toFixed(2), 2);
+        setElement(8, kelvinTofarenheit.toFixed(2), 2);
+        setElement(11, kelvinTorankine.toFixed(2), 2);
+        setElement(14, kelvinToreaumur.toFixed(2), 2);
     }
 
 }
@@ -201,26 +186,46 @@ function doCalculation(keys) {
 //Reset converter after use
 function doReset(keys) {
     if (keys === 1) { //Case for reseting the value
-        setValueToElement(0, "celcius");
-        setValueToElement(0, "farenheit");
-        setValueToElement(0, "rankine");
-        setValueToElement(0, "reaumur");
-        setValueToElement(0, "kelvin");
+        setElement(5, 0, 2);
+        setElement(8, 0, 2);
+        setElement(11, 0, 2);
+        setElement(14, 0, 2);
+        setElement(17, 0, 2);
         doReset(2); //Calling the theme resets too
     } else if (keys === 2) { //Case for reseting the theme
-        let body = document.getElementById("body");
-        let button = document.getElementById("colorPicker");
+        let body = getElement(0);
+        let colorPicker = getElement(3);
 
-        button.value = "#000000";
+        colorPicker.value = "#000000";
         body.removeAttribute("style");
         let dayElement = document.querySelectorAll(".day");
         let nightElement = document.querySelectorAll(".night");
-        dayElement.forEach(function (element) {
-            element.removeAttribute("style");
-        })
-        nightElement.forEach(function (element) {
-            element.removeAttribute("style");
-        })
+        dayElement.forEach((element) => element.removeAttribute("style"));
+        nightElement.forEach((element) => element.removeAttribute("style"));
         customColor = false;
     }
+}
+
+//Function to set element of the argument component
+function setElement(part, input, keys) {
+    let partElement = getElement(part); //Calling the getElement function
+
+    switch (keys) {
+        case 1:
+            partElement.className = input; //Set the style specified for the theme
+            break;
+        case 2:
+            partElement.value = input; //Set the value of the calculation to the input box
+            break;
+    }
+
+}
+
+//Function to get a argument element
+function getElement(part) {
+    let numChk = Number(part); //Check if the input was a number or not
+    if (isNaN(numChk) == false) {
+        part = component[numChk]; //If it was a number get the name from the component list that was referenced by the number
+    }
+    return document.getElementById(part); //Return reference
 }

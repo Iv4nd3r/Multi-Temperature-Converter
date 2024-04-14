@@ -5,7 +5,8 @@
     Created by : Ivander Andreas Wijaya
     What's new : 
     1.0.1 - using boolean state for keeping darktheme state,using identity to compare, changing var to let, adding custom font color, simplify the calculation function
-    1.1.0 - separating stylesheet, script, and markup, implementing DOM, simplify the day/night theme, adding layout and using label-->
+    1.1.0 - separating stylesheet, script, and markup, implementing DOM, simplify the day/night theme, adding layout and using label
+    1.1.1 - Using arrows function to replace anonymous function, add the array of component, use function to get and set element-->
 
 <head>
     <title>Temperature Converter</title>
@@ -20,7 +21,7 @@
 
     <ul id="converterItems">
     </ul>
-    <input type="button" value="Reset" onclick="doReset(1)">
+    <input type="button" value="Reset" onclick="doReset(1)" id="resetButton">
     <input type="button" value="Day/Night&#127767;" onclick="changeTheme(1)" id="themeButton">
     <input type="color" value="#000000" id="colorPicker" onchange="changeTheme(2)">
     <script>
